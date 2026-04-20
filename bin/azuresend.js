@@ -15,9 +15,12 @@ function printUsageAndExit(message) {
     console.error(`Error: ${message}\n`);
   }
   console.error('Usage:');
-  console.error('  azuresend "<file-path>" "<azure_blob_connection_string>" "<azure_container_name>"');
+  console.error('  azuresend "<file-path>" "<azure_blob_connection_string>" ["<azure_container_name>"]');
+  console.error('  Container name defaults to "azuresend" when omitted.');
   process.exit(1);
 }
+
+const DEFAULT_CONTAINER_NAME = 'azuresend';
 
 function buildTimestamp(date) {
   const pad = (n) => String(n).padStart(2, '0');
@@ -55,11 +58,13 @@ function formatBytes(bytes) {
 }
 
 async function main() {
-  const [, , filePath, connectionString, containerName] = process.argv;
+  const [, , filePath, connectionString, containerArg] = process.argv;
 
-  if (!filePath || !connectionString || !containerName) {
+  if (!filePath || !connectionString) {
     printUsageAndExit('Missing required arguments.');
   }
+
+  const containerName = containerArg || DEFAULT_CONTAINER_NAME;
 
   if (!fs.existsSync(filePath)) {
     printUsageAndExit(`File not found: ${filePath}`);
@@ -81,6 +86,15 @@ async function main() {
 
   const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
   const containerClient = blobServiceClient.getContainerClient(containerName);
+
+  if (!(await containerClient.exists())) {
+    console.error(
+      `Container "${containerName}" does not exist. ` +
+      `Create the "${containerName}" container or specify a different one as the third argument.`
+    );
+    process.exit(1);
+  }
+
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
   console.log(`Uploading ${originalName} (${formatBytes(fileSize)}) as ${blobName} to container "${containerName}"...`);
