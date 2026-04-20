@@ -1,6 +1,6 @@
 {
   "name": "azuresend",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Upload a file to Azure Blob Storage with a timestamped name and print a SAS URL.",
   "bin": {
     "azuresend": "bin/azuresend.js"
