@@ -86,6 +86,15 @@ async function main() {
 
   const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
   const containerClient = blobServiceClient.getContainerClient(containerName);
+
+  if (!(await containerClient.exists())) {
+    console.error(
+      `Container "${containerName}" does not exist. ` +
+      `Create the "${containerName}" container or specify a different one as the third argument.`
+    );
+    process.exit(1);
+  }
+
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
   console.log(`Uploading ${originalName} (${formatBytes(fileSize)}) as ${blobName} to container "${containerName}"...`);
