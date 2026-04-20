@@ -16,8 +16,11 @@ Requires Node.js 16+.
 ## Usage
 
 ```bash
-azuresend "C:\path\to\file" "<azure_blob_connection_string>" "<azure_container_name>"
+azuresend "C:\path\to\file" "<azure_blob_connection_string>" ["<azure_container_name>"]
 ```
+
+The container name is optional and defaults to `azuresend` when omitted. The
+container must already exist.
 
 Example:
 
