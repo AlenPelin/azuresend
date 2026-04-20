@@ -1,5 +1,9 @@
 #!/usr/bin/env node
 
+if (!globalThis.crypto) {
+  globalThis.crypto = require('node:crypto').webcrypto;
+}
+
 const fs = require('fs');
 const path = require('path');
 const {
