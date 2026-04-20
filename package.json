@@ -8,7 +8,9 @@
   "main": "bin/azuresend.js",
   "scripts": {
     "start": "node bin/azuresend.js",
-    "build": "node --check bin/azuresend.js"
+    "build": "node --check bin/azuresend.js",
+    "package": "pkg . --compress GZip",
+    "package:win": "pkg . --targets node18-win-x64 --output dist/azuresend.exe --compress GZip"
   },
   "engines": {
     "node": ">=16"
@@ -16,6 +18,20 @@
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
     "cli-progress": "^3.12.0"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  },
+  "pkg": {
+    "scripts": [
+      "bin/azuresend.js"
+    ],
+    "targets": [
+      "node18-win-x64",
+      "node18-linux-x64",
+      "node18-macos-x64"
+    ],
+    "outputPath": "dist"
   },
   "license": "MIT"
 }
